@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2 import sql
+import pandas as pd
 
 def connect(dbname, user, password, host):
     try:
@@ -9,13 +10,15 @@ def connect(dbname, user, password, host):
         print("An error occurred while connecting to PostgreSQL", e)
 
 
-def show_existing(conn):
+def get_existing(conn):
     cur = conn.cursor()
     cur.execute(sql.SQL("SELECT datname FROM pg_database"))
     rows = cur.fetchall()
 
-    for row in rows:
-        print(f"Database name: {row[0]}")
+    # for row in rows:
+    #     print(f"Database name: {row[0]}")
+
+    return rows
 
 
 def create_database(conn, dbname):
@@ -42,6 +45,16 @@ def remove_database(conn, dbname):
     
     # Close the connection
     cur.close()
+
+def get_all_tables(conn):
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+    """)
+    tables = cur.fetchall()
+    return [table[0] for table in tables]
 
 
 def create_table(conn, table_name, columns):
@@ -72,11 +85,11 @@ def remove_table(conn, table_name):
     cur.close()
 
 # date, full_name, quote, document
-def insert_document_data(conn, table_name, columns, data):
+def insert_document_data(conn, table_name, columns, data_df):
     cur = conn.cursor()
     
     # Prepare the SQL command and execute it for each row of data
-    for row in data:
+    for index, row in data_df.iterrows():
         columns_str = ', '.join(columns)
         placeholders = ', '.join(['%s'] * len(columns))
         query = sql.SQL("INSERT INTO {} ({}) VALUES ({});").format(
@@ -114,3 +127,30 @@ def retrieve_data(conn, table_name, columns, data):
     
     # Return the fetched rows
     return rows
+
+def head_postgresql(conn, table_name, n):
+    query = "SELECT * FROM {} LIMIT {}".format(table_name, n)
+    df = pd.read_sql_query(query, conn)
+    return df
+
+def filter_by_name(conn, table_name, name):
+    # Create a new cursor object
+    cur = conn.cursor()
+    
+    # Prepare a string with the SQL command
+    select_command = sql.SQL("SELECT * FROM {} WHERE name = %s;").format(
+        sql.Identifier(table_name)
+    )
+    
+    # Execute the SQL command
+    cur.execute(select_command, (name,))
+
+    primary_keys = []
+    for row in cur.fetchall():
+        primary_keys.append(row[-1])
+    
+    # Close the connection
+    cur.close()
+    
+    # Return the fetched rows
+    return primary_keys
