@@ -1,4 +1,4 @@
-name: SEEK
+name: AyeSpy
 channels:
   - pytorch
   - nvidia

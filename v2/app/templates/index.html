@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AyeSpy v2</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>AyeSpy</h1>
+      <nav>
+        <a href="/search">Search</a>
+        <a href="/reps">Representatives</a>
+        <a href="/bills">Bills</a>
+      </nav>
+    </header>
+    <main>
+      <section>
+        <h2>Discover what your politicians really think</h2>
+        <form hx-get="/search/partial" hx-target="#results" hx-trigger="submit">
+          <input type="text" name="q" placeholder="Search topics or quotes" />
+          <button type="submit">Search</button>
+        </form>
+        <div id="results"></div>
+      </section>
+    </main>
+  </body>
+</html>
+
+

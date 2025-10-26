@@ -1,0 +1,36 @@
+name: AyeSpy
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - numpy
+  - pandas
+  - requests
+  - jupyter
+  - notebook
+  - ipython
+  - matplotlib
+  - psycopg2
+  - sqlalchemy
+  - pytorch
+  - torchvision
+  - transformers
+  - tokenizers
+  - pip:
+    - flask
+    - werkzeug
+    - rich
+    - python-dotenv
+    - beautifulsoup4
+    - lxml
+    - sentence-transformers
+    - pymilvus
+    - alembic
+    - click
+    - tqdm
+    - pytest
+    - pytest-cov
+    - scikit-learn

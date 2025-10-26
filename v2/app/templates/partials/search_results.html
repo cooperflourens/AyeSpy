@@ -1,0 +1,16 @@
+<div class="results">
+  {% if results %}
+    <ul>
+      {% for r in results %}
+        <li>
+          <div class="result-title">{{ r.speaker_name or 'Unknown' }} — {{ r.committee_name or '' }} ({{ r.hearing_date or '' }})</div>
+          <div class="result-snippet">{{ r.text }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div>No results for "{{ query }}"</div>
+  {% endif %}
+</div>
+
+

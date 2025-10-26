@@ -1,0 +1,7 @@
+<div class="chat">
+  {% for m in messages %}
+    <div class="msg {{ m.role }}">{{ m.text }}</div>
+  {% endfor %}
+</div>
+
+

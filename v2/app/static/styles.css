@@ -1,0 +1,10 @@
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+nav a { margin-right: 12px; }
+.results ul { list-style: none; padding: 0; }
+.result-title { font-weight: 600; }
+.chat .msg { padding: 6px 8px; margin: 6px 0; border-radius: 6px; }
+.chat .msg.user { background: #eef; }
+.chat .msg.assistant { background: #efe; }
+
+

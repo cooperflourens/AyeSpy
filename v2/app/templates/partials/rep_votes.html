@@ -1,0 +1,14 @@
+<div>
+  <h2>Votes</h2>
+  {% if votes %}
+    <ul>
+      {% for v in votes %}
+        <li>{{ v.date }} — {{ v.bill_title }} — {{ v.position }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div>No votes yet</div>
+  {% endif %}
+</div>
+
+

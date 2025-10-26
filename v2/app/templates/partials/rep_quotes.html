@@ -1,0 +1,14 @@
+<div>
+  <h2>Quotes</h2>
+  {% if quotes %}
+    <ul>
+      {% for q in quotes %}
+        <li>{{ q.text }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div>No quotes yet</div>
+  {% endif %}
+</div>
+
+

@@ -1,0 +1,14 @@
+<div>
+  <h2>Policy Spectra</h2>
+  {% if axes %}
+    <ul>
+      {% for axis in axes %}
+        <li>{{ axis.name }}: {{ axis.score }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div>No policy scores yet</div>
+  {% endif %}
+</div>
+
+

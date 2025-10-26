@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Representatives - AyeSpy v2</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <h1>Representatives</h1>
+    <ul>
+      {% for rep in reps %}
+      <li><a href="/rep/{{ rep.id }}">{{ rep.full_name }}</a></li>
+      {% else %}
+      <li>No representatives yet</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+
+

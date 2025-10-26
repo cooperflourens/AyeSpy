@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat - AyeSpy v2</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <h1>Chat with Representative {{ rep_id }}</h1>
+    <div id="messages">
+      {% include "partials/chat_messages.html" %}
+    </div>
+    <form hx-post="/chat/rep/{{ rep_id }}" hx-target="#messages" hx-swap="afterend">
+      <input type="text" name="message" placeholder="Type your message" />
+      <button type="submit">Send</button>
+    </form>
+  </body>
+</html>
+
+

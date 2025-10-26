@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Representative - AyeSpy v2</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <h1>Representative {{ rep.id }}</h1>
+    <nav>
+      <a hx-get="/rep/{{ rep.id }}/quotes" hx-target="#tab">Quotes</a>
+      <a hx-get="/rep/{{ rep.id }}/votes" hx-target="#tab">Votes</a>
+      <a hx-get="/rep/{{ rep.id }}/policy" hx-target="#tab">Policy</a>
+      <a href="/chat/rep/{{ rep.id }}">Chat</a>
+    </nav>
+    <div id="tab">
+      {% include "partials/rep_quotes.html" %}
+    </div>
+  </body>
+</html>
+
+
