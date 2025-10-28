@@ -4,10 +4,16 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 import os
 from sqlalchemy.orm import Session
+from sqlalchemy import or_, desc
 
 from ..db import get_session
 from ..models import TranscriptSegment, Hearing, Committee
 from ..services.topics import TopicService
+from ..services.embeddings import EmbeddingService
+
+# Initialize services once (avoid reloading model per request)
+TOPIC_SERVICE = TopicService()
+EMBEDDER = EmbeddingService()
 
 
 router = APIRouter(tags=["search"])
@@ -33,25 +39,32 @@ async def search_partial(
     results = []
     query = (q or "").strip()
     if query:
-        topic_service = TopicService()
-        expanded_terms = topic_service.expand(query)
+        expanded_terms = TOPIC_SERVICE.expand(query)
         with get_session() as session:  # type: Session
             # Simple keyword search across expanded terms
             qset = set(expanded_terms or [query])
             text_filters = [TranscriptSegment.text.ilike(f"%{term}%") for term in qset]
+            # Combine OR in SQL for speed
+            condition = text_filters[0] if len(text_filters) == 1 else or_(*text_filters)
             segments = (
                 session.query(TranscriptSegment)
                 .join(Hearing, TranscriptSegment.hearing_id == Hearing.id)
                 .join(Committee, Hearing.committee_id == Committee.id)
-                .filter(text_filters[0] if len(text_filters) == 1 else (text_filters[0]))
-                .limit(20)
+                .filter(condition)
+                .order_by(desc(Hearing.date))
+                .limit(100)
                 .all()
             )
-            # If more than one term, apply OR filtering in Python (SQLite portability)
-            if len(qset) > 1:
-                segments = [s for s in segments if any(term.lower() in (s.text or "").lower() for term in qset)]
-            for seg in segments:
-                # Minimal metadata join for display
+
+            # Semantic re-ranking if embedding model is available
+            if EMBEDDER.is_available() and segments:
+                texts = [s.text for s in segments]
+                ranked = EMBEDDER.rank(query, texts, top_k=min(20, len(texts)))
+                chosen = [segments[i] for i, _ in ranked]
+            else:
+                chosen = segments[:20]
+
+            for seg in chosen:
                 hearing = seg.hearing
                 committee = hearing.committee if hearing else None
                 results.append(
